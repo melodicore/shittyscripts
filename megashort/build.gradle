@@ -1,0 +1,18 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group = 'me.datafox.shitty.megashort'
+
+java {
+    mainClassName = 'me.datafox.shitty.megashort.Runner'
+}
+
+repositories {
+    mavenCentral()
+}
+
+test {
+    useJUnitPlatform()
+}
