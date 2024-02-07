@@ -24,7 +24,7 @@ public class NameFactory {
             sb.append(getOnes(i / 100)).append("_HUNDRED_");
             i %= 100;
         }
-        if(i != 0 && !sb.isEmpty()) {
+        if(i != 0 && !(sb.isEmpty() || "NEGATIVE_".contentEquals(sb))) {
             sb.append("AND_");
         }
         if(i >= 20) {
