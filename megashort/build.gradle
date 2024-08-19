@@ -12,7 +12,3 @@ java {
 repositories {
     mavenCentral()
 }
-
-test {
-    useJUnitPlatform()
-}
