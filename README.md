@@ -2,5 +2,5 @@
 
 Things included:
 
-* [Megashort](megashort), an <code>enum</code> with all possible <code>short</code> values as constants. Breaks Java's 
-internal limits, so it doesn't even compile. Includes code used to generate it.
+* [Megashort](megashort), a Java <code>enum</code> with all possible <code>short</code> values as constants. Breaks 
+Java's internal limits, so it doesn't even compile. Includes code used to generate it.
