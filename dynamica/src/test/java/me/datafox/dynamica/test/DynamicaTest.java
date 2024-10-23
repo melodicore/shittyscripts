@@ -20,7 +20,7 @@ public class DynamicaTest {
         obj.call("add", Obj.create());
         obj.call("add", Obj.of("fourth element"));
         obj.call("get", Obj.of(2))
-                .register("toString", params -> Obj.of("third element"));
+                .register("toString", (aThis, params) -> Obj.of("third element"));
         assertTrue(Obj.equals("[first element, second element, third element, fourth element]", obj.call("toString")));
     }
 }

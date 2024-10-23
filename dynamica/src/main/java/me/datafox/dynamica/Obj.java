@@ -79,7 +79,7 @@ public final class Obj {
         Throwable lastThrowable = null;
         for(Func func : funcs.get(name)) {
             try {
-                return func.call(params);
+                return func.call(this, params);
             } catch(Throwable e) {
                 lastThrowable = e;
             }
@@ -124,7 +124,7 @@ public final class Obj {
             for(Func func : funcs.get("hashCode")) {
                 Obj hash;
                 try {
-                    hash = func.call();
+                    hash = func.call(this);
                 } catch(Throwable ignored) {
                     continue;
                 }
@@ -149,7 +149,7 @@ public final class Obj {
             for(Func func : funcs.get("equals")) {
                 Obj equal;
                 try {
-                    equal = func.call(wrap(obj));
+                    equal = func.call(this, wrap(obj));
                 } catch(Throwable ignored) {
                     continue;
                 }
@@ -174,7 +174,7 @@ public final class Obj {
             for(Func func : funcs.get("toString")) {
                 Obj string;
                 try {
-                    string = func.call();
+                    string = func.call(this);
                 } catch(Throwable ignored) {
                     continue;
                 }
@@ -360,7 +360,7 @@ public final class Obj {
         }
 
         @Override
-        public Obj call(Obj ... params) throws InvocationTargetException, IllegalAccessException {
+        public Obj call(Obj aThis, Obj ... params) throws InvocationTargetException, IllegalAccessException {
             Object[] arr = Arrays
                     .stream(params)
                     .map(Obj::unwrap)
