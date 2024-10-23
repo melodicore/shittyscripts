@@ -1,6 +1,8 @@
 package me.datafox.dynamica;
 
 /**
+ * Thrown if a field or a function of an object cannot be accessed.
+ *
  * @author datafox
  */
 public class ObjAccessException extends RuntimeException {

@@ -6,6 +6,10 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 /**
+ * An object that can represent any object regardless of type. Has an arbitrary number of fields and functions that can
+ * be added to it during runtime. Can also wrap a native object, in which case it will automatically reflect upon the
+ * native object's accessible fields and methods and registers them appropriately.
+ *
  * @author datafox
  */
 public final class Obj {
@@ -24,6 +28,10 @@ public final class Obj {
         }
     }
 
+    /**
+     * @param name name of the field to be retrieved
+     * @return value of the retrieved field
+     */
     public Obj get(String name) {
         FieldWrapper f = fields.get(name);
         if(f == null) {
@@ -36,6 +44,10 @@ public final class Obj {
         }
     }
 
+    /**
+     * @param name name of the field to be set
+     * @param obj value for the field to be set
+     */
     public void set(String name, Obj obj) {
         try {
             if(fields.containsKey(name)) {
@@ -48,10 +60,18 @@ public final class Obj {
         }
     }
 
+    /**
+     * @return names of all currently registered fields
+     */
     public Obj getFieldNames() {
         return wrap(fields.keySet());
     }
 
+    /**
+     * @param name name of the function to be called
+     * @param params parameters for the function to be called
+     * @return value returned by the function or {@code null}
+     */
     public Obj call(String name, Obj ... params) {
         if(!funcs.containsKey(name)) {
             throw new ObjAccessException("Could not call func " + name);
@@ -70,6 +90,10 @@ public final class Obj {
         throw new ObjAccessException("Could not call func " + name);
     }
 
+    /**
+     * @param name name of the function to be registered
+     * @param func function to be registered
+     */
     public void register(String name, Func func) {
         if(!funcs.containsKey(name)) {
             funcs.put(name, new LinkedList<>());
@@ -81,10 +105,19 @@ public final class Obj {
         }
     }
 
+    /**
+     * @return names of all currently registered functions
+     */
     public Obj getFuncNames() {
         return wrap(funcs.keySet());
     }
 
+    /**
+     * If one or more functions called hashCode are present, this method will iterate over them until one is found that
+     * has no parameter and returns an integer. If none of them do, the hashcode of all fields will be returned instead.
+     *
+     * @return hash code of this object
+     */
     @Override
     public int hashCode() {
         if(funcs.containsKey("hashCode")) {
@@ -103,6 +136,13 @@ public final class Obj {
         return fields.hashCode();
     }
 
+    /**
+     * If one or more functions called equals are present, this method will iterate over them until one is found that
+     * has one parameter and returns a boolean. If none of them do, {@link Obj#equals(Object, Object)} will be called
+     * instead.
+     *
+     * @return {@code true} if this object is equal to the specified object
+     */
     @Override
     public boolean equals(Object obj) {
         if(funcs.containsKey("equals")) {
@@ -121,6 +161,13 @@ public final class Obj {
         return equals(this, obj);
     }
 
+    /**
+     * If one or more functions called toString are present, this method will iterate over them until one is found that
+     * has no parameter and returns a string. If none of them do, the string representation of all fields will be
+     * returned instead.
+     *
+     * @return string representation of this object
+     */
     @Override
     public String toString() {
         if(funcs.containsKey("toString")) {
@@ -139,10 +186,17 @@ public final class Obj {
         return fields.toString();
     }
 
+    /**
+     * @return object that is not backed by any native object
+     */
     public static Obj create() {
         return new Obj(null);
     }
 
+    /**
+     * @param o native object to back this object with
+     * @return object that is backed by the specified native object
+     */
     public static Obj of(Object o) {
         if(o instanceof Obj obj) {
             return obj;
@@ -150,6 +204,14 @@ public final class Obj {
         return new Obj(o);
     }
 
+    /**
+     * If both objects are {@link Obj} and not backed with a native object, their fields are compared. Otherwise
+     * {@link Objects#equals(Object, Object)} is used.
+     *
+     * @param a first object to be compared
+     * @param b second object to be compared
+     * @return {@code true} if the specified objects are equal to each other
+     */
     public static boolean equals(Object a, Object b) {
         if(a == b) {
             return true;
@@ -254,7 +316,7 @@ public final class Obj {
     private static class FakeFieldWrapper implements FieldWrapper {
         private Object object;
 
-        public FakeFieldWrapper(Object object) {
+        private FakeFieldWrapper(Object object) {
             this.object = object;
         }
 
